@@ -20,7 +20,6 @@ module.exports = {
     alert: false,
     button: false,
     carousel: false,
-    collapse: false,
     dropdown: false,
     modal: false,
     tooltip: false,

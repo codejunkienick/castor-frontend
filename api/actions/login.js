@@ -1,7 +1,10 @@
 export default function login(req) {
   const user = {
-    name: req.body.name
+    username: req.body.name,
+    displayName: 'John Doe',
+    avatar: '/avatar.png'
   };
+  console.log(user);
   req.session.user = user;
   return Promise.resolve(user);
 }
