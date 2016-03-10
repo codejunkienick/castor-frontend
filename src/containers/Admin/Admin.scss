@@ -1,6 +1,6 @@
 .navHeader {
   padding: 15px 8px;
-  background-color: #03A9F4;
+  background-color: #2196F3;
   color: #fff;
 
   img {
@@ -13,4 +13,10 @@
 .userInfo {
   display: inline-block;
   vertical-align: middle;
+}
+.adminPanel {
+  width: 100%;
+}
+.adminContent {
+  transition: 'all 450ms ease-in'
 }

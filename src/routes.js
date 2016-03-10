@@ -46,10 +46,11 @@ export default (store) => {
         <Route path="loginSuccess" component={LoginSuccess}/>
 
         <Route path="admin" component={Admin}>
-          <IndexRoute component={Dashboard}/>
+          <IndexRoute component={Posts}/>
           
           <Route path="dashboard" component={Dashboard}/>
           <Route path="posts" component={Posts}/>
+          <Route path="post" component={Post}/>
           <Route path="users" component={Users}/>
           <Route path="categories" component={Categories}/>
           <Route path="settings" component={Settings}/>

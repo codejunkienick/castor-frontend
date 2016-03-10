@@ -32,7 +32,7 @@ export default class Admin extends Component {
     super(props);
     this.state = {
       open: true,
-      navWidth: 256
+      navWidth: 256,
     };
   }
 
@@ -40,11 +40,19 @@ export default class Admin extends Component {
     this.props.pushState(menuItems[i].route);
   }
 
+  toggleNav() {
+    console.log(this.state);
+    this.setState({
+      open: !this.state.open,
+      navWidth: (this.state.open) ? 0 : 256
+    })
+  }
+
   render() {
     const styles = require('./Admin.scss');
     const { user } = this.props;
     return (
-      <div>
+      <div className={styles.adminPanel}>
         <Helmet title="Админ Панель"/>
         <LeftNav
           width={this.state.width}
@@ -66,11 +74,14 @@ export default class Admin extends Component {
         </LeftNav>
 
         <div
+          className={styles.adminContent}
           style={{
-            paddingLeft: this.state.navWidth + 'px'
+            paddingLeft: this.state.navWidth + 'px',
           }}
         >
-          {this.props.children}
+          {this.props.children && React.cloneElement(this.props.children, {
+            toggleNav: this.toggleNav.bind(this)
+          })}
         </div>
       </div>
     );

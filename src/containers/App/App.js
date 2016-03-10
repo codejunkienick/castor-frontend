@@ -22,6 +22,7 @@ injectTapEventPlugin();
       promises.push(dispatch(loadInfo()));
     }
     if (!isAuthLoaded(getState())) {
+      console.log('loading auth');
       promises.push(dispatch(loadAuth()));
     }
 

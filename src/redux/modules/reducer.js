@@ -15,6 +15,7 @@ export default combineReducers({
   reduxAsyncConnect,
   auth,
   form,
+  posts,
   multireducer: multireducer({
     counter1: counter,
     counter2: counter,

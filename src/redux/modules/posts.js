@@ -1,6 +1,9 @@
-const LOAD = 'castor/LOAD';
-const LOAD_SUCCESS = 'castor/LOAD_SUCCESS';
-const LOAD_FAIL = 'castor/LOAD_FAIL';
+const LOAD = 'castor/posts/LOAD';
+const LOAD_SUCCESS = 'castor/posts/LOAD_SUCCESS';
+const LOAD_FAIL = 'castor/posts/LOAD_FAIL';
+const DELETE = 'castor/posts/DELETE';
+const DELETE_SUCCESS = 'castor/posts/DELETE_SUCCESS';
+const DELETE_FAIL = 'castor/posts/DELETE_FAIL';
 
 const initialState = {
   loaded: false
@@ -27,6 +30,32 @@ export default function posts(state = initialState, action = {}) {
         loaded: false,
         error: action.error
       };
+    case DELETE:
+      return {
+        ...state,
+        deleting: {
+          ...state.deleting,
+          [action.id]: true
+        },
+      };
+    case DELETE_SUCCESS:
+      return {
+        ...state,
+        deleting: {
+          ...state.deleting,
+          [action.id]: null
+        },
+        data: action.result
+      };
+    case DELETE_FAIL:
+      return {
+        ...state,
+        deleting: {
+          ...state.deleting,
+          [action.id]: null
+        },
+        error: action.error
+      };
     default:
       return state;
   }
@@ -42,3 +71,17 @@ export function load() {
     promise: (client) => client.get('/loadPosts')
   };
 }
+
+export function deletePost(id) {
+  return {
+    types: [DELETE, DELETE_SUCCESS, DELETE_FAIL],
+    promise: (client) => client.post('/deletePost', {
+      data: {
+        id
+      }
+    }),
+    id
+  };
+}
+
+

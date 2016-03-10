@@ -1,0 +1,30 @@
+.postWrap {
+  margin: 8px 16px 0 16px;
+}
+.info {
+  display: flex;
+  flex:1;
+  align-self: center;
+}
+.actions {
+  display: flex;
+  align-self: flex-end;
+}
+.post {
+  flex:1;
+  display: flex;
+  padding: 8px 8px 8px 16px;
+}
+.author {
+  display: inline-block;
+  margin-right: 8px;
+  color: #00BCD4;
+}
+
+.title {
+  margin-right: 8px;
+}
+
+.date { 
+  color: rgba(0,0,0,0.6);
+}
