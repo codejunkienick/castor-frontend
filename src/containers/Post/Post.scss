@@ -1,0 +1,23 @@
+.postContainer {
+  margin: 8px 16px;
+  padding: 8px 16px;
+}
+.postFields {
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.postRow {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  margin-bottom: 16px;
+}
+.postBody {
+  margin: 16px 0;
+}
+.postBodyHeader {
+  font-size: 18px;
+  line-height: 1.4;
+  margin: 10px 0 3px 0;
+  display: block;
+}

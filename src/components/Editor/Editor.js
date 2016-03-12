@@ -34,14 +34,16 @@ var AlloyEditor = require('alloyeditor');
  *   }
  * }
  */
-
 export default class MyEditor extends Component {
+  static propTypes = {
+    onChange: PropTypes.func.isRequired,
+    editorState: PropTypes.object.isRequired
+  }
   constructor(props) {
     super(props);
-    this.state = {editorState: EditorState.createEmpty()};
 
     this.focus = () => this.refs.editor.focus();
-    this.onChange = (editorState) => this.setState({editorState});
+    this.onChange = this.props.onChange;
 
     this.handleKeyCommand = (command) => this._handleKeyCommand(command);
     this.toggleBlockType = (type) => this._toggleBlockType(type);
@@ -49,7 +51,7 @@ export default class MyEditor extends Component {
   }
 
   _handleKeyCommand(command) {
-    const {editorState} = this.state;
+    const {editorState} = this.props;
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       this.onChange(newState);
@@ -61,7 +63,7 @@ export default class MyEditor extends Component {
   _toggleBlockType(blockType) {
     this.onChange(
       RichUtils.toggleBlockType(
-        this.state.editorState,
+        this.props.editorState,
         blockType
       )
     );
@@ -70,14 +72,14 @@ export default class MyEditor extends Component {
   _toggleInlineStyle(inlineStyle) {
     this.onChange(
       RichUtils.toggleInlineStyle(
-        this.state.editorState,
+        this.props.editorState,
         inlineStyle
       )
     );
   }
 
   render() {
-    const {editorState} = this.state;
+    const {editorState} = this.props;
     const styles = require('./Editor.scss');
 
     // If the user changes block type before entering any text, we can
@@ -91,7 +93,7 @@ export default class MyEditor extends Component {
     }
 
     return (
-      <div className="RichEditor-root">
+      <div className={styles.root}>
         <BlockStyleControls
           editorState={editorState}
           onToggle={this.toggleBlockType}
@@ -185,7 +187,7 @@ const BlockStyleControls = (props) => {
                        active={type.style === blockType}
                        label={type.label}
                        onToggle={props.onToggle}
-                       style={type.style}
+                       style={styles[type.style]}
                        />
                     )}
                     </div>

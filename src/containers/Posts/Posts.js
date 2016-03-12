@@ -42,7 +42,7 @@ export default class Posts extends Component {
         <DashboardBar toggleNav={this.props.toggleNav} title="Записи"/>
         {(loaded && !loading) && 
           posts.map((post, index) => {
-            return <PostItem {...post} id={index} />;
+            return <PostItem {...post} key={index} id={index} />;
           })
         } 
         

@@ -4,6 +4,12 @@ const LOAD_FAIL = 'castor/posts/LOAD_FAIL';
 const DELETE = 'castor/posts/DELETE';
 const DELETE_SUCCESS = 'castor/posts/DELETE_SUCCESS';
 const DELETE_FAIL = 'castor/posts/DELETE_FAIL';
+const PUBLISH = 'castor/posts/PUBLISH';
+const PUBLISH_SUCCESS = 'castor/posts/PUBLISH_SUCCESS';
+const PUBLISH_FAIL = 'castor/posts/PUBLISH_FAIL';
+const UPDATE = 'castor/posts/UPDATE';
+const UPDATE_SUCCESS = 'castor/posts/UPDATE_SUCCESS';
+const UPDATE_FAIL = 'castor/posts/UPDATE_FAIL';
 
 const initialState = {
   loaded: false
@@ -56,6 +62,24 @@ export default function posts(state = initialState, action = {}) {
         },
         error: action.error
       };
+    case PUBLISH:
+      return {
+        ...state,
+        publishing: true
+      };
+    case PUBLISH_SUCCESS:
+      return {
+        ...state,
+        publishing: false,
+        published: true
+      };
+    case PUBLISH_FAIL:
+      return {
+        ...state,
+        publishing: false,
+        published: false,
+        publishError: action.error
+      };
     default:
       return state;
   }
@@ -84,4 +108,14 @@ export function deletePost(id) {
   };
 }
 
+export function publish(post) {
+  return {
+    types: [PUBLISH, PUBLISH_SUCCESS, PUBLISH_FAIL],
+    promise: (client) => client.post('/publishPost', {
+      data: {
+        ...post
+      }
+    })
+  };
+}
 
