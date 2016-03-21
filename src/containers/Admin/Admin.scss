@@ -16,7 +16,15 @@
 }
 .adminPanel {
   width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 .adminContent {
-  transition: 'all 450ms ease-in'
+  transition: all 300ms ease-out;
+  position: relative;
+  height: inherit;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }

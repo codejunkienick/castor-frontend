@@ -7,6 +7,8 @@ const LOGIN_FAIL = 'castor/auth/LOGIN_FAIL';
 const LOGOUT = 'castor/auth/LOGOUT';
 const LOGOUT_SUCCESS = 'castor/auth/LOGOUT_SUCCESS';
 const LOGOUT_FAIL = 'castor/auth/LOGOUT_FAIL';
+const AUTHENTICATE_REQUEST = 'castor/auth/AUTHENTICATE_REQUEST';
+const REMOVE_TOKEN = 'castor/auth/REMOVE_TOKEN';
 
 const initialState = {
   loaded: false
@@ -24,14 +26,17 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         loading: false,
         loaded: true,
-        user: action.result
+        token: action.result.token,
+        user: action.result.user
       };
     case LOAD_FAIL:
       return {
         ...state,
         loading: false,
         loaded: false,
-        error: action.error
+        user: null,
+        token: null,
+        error: action.error.message
       };
     case LOGIN:
       return {
@@ -42,14 +47,15 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         loggingIn: false,
-        user: action.result
+        user: action.result,
+        token: action.result.token
       };
     case LOGIN_FAIL:
       return {
         ...state,
         loggingIn: false,
         user: null,
-        loginError: action.error
+        loginError: action.error.message
       };
     case LOGOUT:
       return {
@@ -60,7 +66,8 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         loggingOut: false,
-        user: null
+        user: null,
+        token: null
       };
     case LOGOUT_FAIL:
       return {
@@ -80,24 +87,40 @@ export function isLoaded(globalState) {
 export function load() {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/loadAuth')
+    promise: (client) => client.get('/token')
   };
 }
 
-export function login(name) {
+export function login(name, password) {
+  console.log(name + " " + password);
   return {
     types: [LOGIN, LOGIN_SUCCESS, LOGIN_FAIL],
-    promise: (client) => client.post('/login', {
+    promise: (client) => client.post('/token', {
       data: {
-        name: name
+        username: name,
+        password: password
       }
     })
+  };
+}
+
+export function authenticate(token) {
+  return {
+    type: [AUTHENTICATE_REQUEST],
+    auth: (client) => client.auth(token)
+  };
+}
+
+export function removeToken() {
+  return {
+    type: [REMOVE_TOKEN],
+    auth: (client) => client.auth('')
   };
 }
 
 export function logout() {
   return {
     types: [LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAIL],
-    promise: (client) => client.get('/logout')
+    promise: (client) => client.get('/user/logout')
   };
 }

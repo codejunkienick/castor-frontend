@@ -11,7 +11,8 @@
   flex: 1;
 }
 .appContent {
+  flex:1;
+  min-height: 100vh;
   display: flex;
-  min-height: 800px;
-  flex: 1;
+  flex-direction: column;
 }

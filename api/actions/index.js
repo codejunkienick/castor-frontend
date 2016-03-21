@@ -5,4 +5,6 @@ export logout from './logout';
 export loadPosts from './loadPosts';
 export publishPost from './publishPost';
 export deletePost from './deletePost';
+export post from './post';
 export * as widget from './widget/index';
+export * as categories from './categories/index';

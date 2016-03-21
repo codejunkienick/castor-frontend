@@ -25,7 +25,6 @@ export function getPosts(req) {
 }
 export default function loadInfo(req) {
   return new Promise((resolve) => {
-    console.log('return dummyPosts');
     resolve(getPosts(req));
   });
 }

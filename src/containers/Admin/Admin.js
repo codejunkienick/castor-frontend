@@ -3,9 +3,12 @@ import {connect} from 'react-redux';
 import { routeActions } from 'react-router-redux';
 import Helmet from 'react-helmet';
 import {
+  Avatar,
   LeftNav,
   MenuItem
 } from 'material-ui';
+import { asyncConnect } from 'redux-async-connect';
+import { load as loadInfo, isLoaded as isInfoLoaded } from 'redux/modules/info';
 
 const menuItems = [
   { route: '/admin/posts', text: 'Posts' },
@@ -14,6 +17,17 @@ const menuItems = [
   { route: '/admin/settings', text: 'Settings' },
 ];
 
+@asyncConnect([{
+  promise: ({store: {dispatch, getState}}) => {
+    const promises = [];
+
+    if (!isInfoLoaded(getState())) {
+      promises.push(dispatch(loadInfo()));
+    }
+
+    return Promise.all(promises);
+  }
+}])
 @connect(
   (state) => { 
     return {
@@ -48,6 +62,21 @@ export default class Admin extends Component {
     })
   }
 
+  _renderAvatar(avatar, username) {
+    if (avatar) {
+      return (
+          <img src={avatar} />
+      );
+    } else {
+      return (
+        <Avatar
+          >
+          {username.substring(0,1)}
+        </Avatar>
+      );
+    } 
+  }
+
   render() {
     const styles = require('./Admin.scss');
     const { user } = this.props;
@@ -59,9 +88,9 @@ export default class Admin extends Component {
           open={this.state.open}
           >
           <div className={styles.navHeader}>
-            <img src={user.avatar} />
+            {this._renderAvatar(user.avatar, user.userName)}
             <span className={styles.userInfo}>
-              {'@' + user.username}
+              {'@' + user.userName}
               <br />
               {user.displayName}
             </span>

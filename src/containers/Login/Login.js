@@ -18,9 +18,11 @@ export default class Login extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    const input = this.refs.username;
-    this.props.login(input.getValue());
-    input.value = '';
+    const usernameInput = this.refs.username;
+    const passwordInput = this.refs.password;
+    this.props.login(usernameInput.getValue(), passwordInput.getValue());
+    usernameInput.value = '';
+    passwordInput.value = '';
   }
 
   render() {
@@ -40,6 +42,7 @@ export default class Login extends Component {
                     hintText="Username"
                     floatingLabelText="Username"
                     type="text"
+                    defaultValue="admin"
                   />
                 </div>
                 <div className={styles.loginRow}>
@@ -48,6 +51,7 @@ export default class Login extends Component {
                     hintText="Password"
                     floatingLabelText="Password"
                     type="password"
+                    defaultValue="SuperKek_007"
                   />
                 </div>
                 <div>

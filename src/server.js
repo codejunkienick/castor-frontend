@@ -18,7 +18,7 @@ import createHistory from 'react-router/lib/createMemoryHistory';
 import {Provider} from 'react-redux';
 import getRoutes from './routes';
 
-const targetUrl = 'http://' + config.apiHost + ':' + config.apiPort;
+const targetUrl = 'http://' + config.apiHost + ':' + config.apiPort ;
 const pretty = new PrettyError();
 const app = new Express();
 const server = new http.Server(app);
@@ -108,7 +108,7 @@ if (config.port) {
     if (err) {
       console.error(err);
     }
-    console.info('----\n==> ✅  %s is running, talking to API server on %s.', config.app.title, config.apiPort);
+    console.info('----\n==> ✅  %s is running, talking to API server on %s:%s.', config.app.title, config.apiHost, config.apiPort);
     console.info('==> 💻  Open http://%s:%s in a browser to view the app.', config.host, config.port);
   });
 } else {

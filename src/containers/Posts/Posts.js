@@ -1,13 +1,13 @@
 import React, {Component, PropTypes} from 'react';
-import { asyncConnect } from 'redux-async-connect';
-import { routeActions } from 'react-router-redux';
+import {asyncConnect} from 'redux-async-connect';
+import {routeActions} from 'react-router-redux';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Helmet from 'react-helmet';
 import {load as loadPosts, isLoaded as isPostsLoaded} from 'redux/modules/posts';
-import { FloatingActionButton, AppBar, IconMenu, MenuItem, IconButton, Paper } from 'material-ui';
+import {FloatingActionButton, MenuItem, IconButton} from 'material-ui';
 import ContentAdd from 'material-ui/lib/svg-icons/content/add';
-import { PostItem, DashboardBar } from 'components';
+import {PostItem, DashboardBar, LoadingSpinner} from 'components';
 
 @connect(
   state => {
@@ -33,16 +33,16 @@ export default class Posts extends Component {
     super(props);
     this.props.loadPosts();
   } 
-
   render() {
     const {pushState, posts, loaded, loading } = this.props;
     return (
       <div>
         <Helmet title="Записи"/>
         <DashboardBar toggleNav={this.props.toggleNav} title="Записи"/>
+        {loading && <LoadingSpinner />}
         {(loaded && !loading) && 
           posts.map((post, index) => {
-            return <PostItem {...post} key={index} id={index} />;
+            return <PostItem {...post} key={index} id={post.id} />;
           })
         } 
         

@@ -5,11 +5,15 @@ export default function clientMiddleware(client) {
         return action(dispatch, getState);
       }
 
-      const { promise, types, ...rest } = action; // eslint-disable-line no-redeclare
+      const { promise, types, auth, ...rest } = action; // eslint-disable-line no-redeclare
+      if (auth) {
+        auth(client);
+        return next({promise, types, ...rest});
+      }
+
       if (!promise) {
         return next(action);
       }
-
       const [REQUEST, SUCCESS, FAILURE] = types;
       next({...rest, type: REQUEST});
 

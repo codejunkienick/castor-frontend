@@ -5,12 +5,15 @@ const methods = ['get', 'post', 'put', 'patch', 'del'];
 
 function formatUrl(path) {
   const adjustedPath = path[0] !== '/' ? '/' + path : path;
-  if (__SERVER__) {
+  if (true) {
     // Prepend host and port of the API server to the path.
-    return 'http://' + config.apiHost + ':' + config.apiPort + adjustedPath;
+    //return 'http://' + config.apiHost + ':' + config.apiPort + '/api' + adjustedPath;
+    return 'http://192.168.139.128:1929/api' + adjustedPath;
   }
-  // Prepend `/api` to relative URL, to proxy to API server.
-  return '/api' + adjustedPath;
+  else {
+    // Prepend `/api` to relative URL, to proxy to API server.
+    return '/api' + adjustedPath;
+  }
 }
 
 /*
@@ -21,9 +24,13 @@ function formatUrl(path) {
  */
 class _ApiClient {
   constructor(req) {
+    this.token = '';
+
     methods.forEach((method) =>
       this[method] = (path, { params, data } = {}) => new Promise((resolve, reject) => {
+        console.log(formatUrl(path));
         const request = superagent[method](formatUrl(path));
+        request.accept('application/json');
 
         if (params) {
           request.query(params);
@@ -33,12 +40,27 @@ class _ApiClient {
           request.set('cookie', req.get('cookie'));
         }
 
-        if (data) {
-          request.send(data);
+        if (this.token) {
+          request.set('Authorization', 'Bearer ' + this.token);
         }
 
-        request.end((err, { body } = {}) => err ? reject(body || err) : resolve(body));
+        if (data) {
+          request.set('Content-Type', 'application/json');
+          request.send(JSON.stringify(data));
+        }
+
+        request.end(function(err, res) {
+          if (err) {
+            reject(res.body || err)
+          } else {
+            resolve(res.body)
+          }
+        });
       }));
+
+      this.auth = (newToken) => { 
+        this.token = newToken;
+      }
   }
 }
 

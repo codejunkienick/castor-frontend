@@ -18,16 +18,23 @@ import {
 export default (store) => {
   const requireLogin = (nextState, replace, cb) => {
     function checkAuth() {
-      const { auth: { user }} = store.getState();
+      const { auth: { user, token }} = store.getState();
       if (!user) {
         // oops, not logged in, so can't be here!
-        replace('/');
+        replace('/login');
       }
       cb();
     }
 
     if (!isAuthLoaded(store.getState())) {
-      store.dispatch(loadAuth()).then(checkAuth);
+      store
+      .dispatch(loadAuth())
+      .then(checkAuth)
+      .catch(err => {
+        console.log('oops');
+        replace('/');
+        cb();
+      }) ;
     } else {
       checkAuth();
     }
@@ -51,8 +58,10 @@ export default (store) => {
           <Route path="dashboard" component={Dashboard}/>
           <Route path="posts" component={Posts}/>
           <Route path="post" component={Post}/>
+          <Route path="post/:postID" component={Post}/>
           <Route path="users" component={Users}/>
           <Route path="categories" component={Categories}/>
+          <Route path="categories/:categoryId" component={Categories}/>
           <Route path="settings" component={Settings}/>
         </Route>
       </Route>

@@ -10,6 +10,10 @@ const PUBLISH_FAIL = 'castor/posts/PUBLISH_FAIL';
 const UPDATE = 'castor/posts/UPDATE';
 const UPDATE_SUCCESS = 'castor/posts/UPDATE_SUCCESS';
 const UPDATE_FAIL = 'castor/posts/UPDATE_FAIL';
+const FETCH = 'castor/posts/FETCH';
+const FETCH_SUCCESS = 'castor/posts/FETCH_SUCCESS';
+const FETCH_FAIL = 'castor/posts/FETCH_FAIL';
+const NEW_POST = 'castor/posts/NEW_POST';
 
 const initialState = {
   loaded: false
@@ -51,7 +55,10 @@ export default function posts(state = initialState, action = {}) {
           ...state.deleting,
           [action.id]: null
         },
-        data: action.result
+        deleted: {
+          ...state.deleting,
+          [action.id]: true
+        }
       };
     case DELETE_FAIL:
       return {
@@ -71,7 +78,8 @@ export default function posts(state = initialState, action = {}) {
       return {
         ...state,
         publishing: false,
-        published: true
+        published: true,
+        publishedId: action.result.id
       };
     case PUBLISH_FAIL:
       return {
@@ -80,6 +88,51 @@ export default function posts(state = initialState, action = {}) {
         published: false,
         publishError: action.error
       };
+    case FETCH:
+      return {
+        ...state,
+        fetching: true,
+        currentPost: null,
+        fetchError: null,
+      };
+    case FETCH_SUCCESS:
+      return {
+        ...state,
+        fetching: false,
+        currentPost: action.result
+      };
+    case FETCH_FAIL:
+      return {
+        ...state,
+        fetching: false,
+        fetchError: action.error
+      };
+    case UPDATE:
+      return {
+        ...state,
+        updating: true,
+        currentPost: null,
+        updateError: null,
+      };
+    case UPDATE_SUCCESS:
+      return {
+        ...state,
+        updating: false,
+        currentPost: action.result
+      };
+    case UPDATE_FAIL:
+      return {
+        ...state,
+        updating: false,
+        updateError: action.error
+      };
+    case NEW_POST: 
+      return {
+      ...state,
+      currentPost: null,
+      published: false,
+      publishedId: null
+    };
     default:
       return state;
   }
@@ -92,30 +145,53 @@ export function isLoaded(globalState) {
 export function load() {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/loadPosts')
+    promise: (client) => client.get('/post/load')
   };
 }
 
 export function deletePost(id) {
   return {
     types: [DELETE, DELETE_SUCCESS, DELETE_FAIL],
-    promise: (client) => client.post('/deletePost', {
+    promise: (client) => client.del('/post', {
       data: {
-        id
+        id: id
       }
     }),
     id
   };
 }
 
+export function initNewPost() {
+  return {
+    type: NEW_POST
+  };
+}
+
 export function publish(post) {
   return {
     types: [PUBLISH, PUBLISH_SUCCESS, PUBLISH_FAIL],
-    promise: (client) => client.post('/publishPost', {
+    promise: (client) => client.post('/post', {
       data: {
         ...post
       }
     })
+  };
+}
+export function update(post, id) {
+  return {
+    types: [UPDATE, UPDATE_SUCCESS, UPDATE_FAIL],
+    promise: (client) => client.put('/post/' + id, {
+      data: {
+        ...post
+      }
+    })
+  };
+}
+
+export function fetch(id) {
+  return {
+    types: [FETCH, FETCH_SUCCESS, FETCH_FAIL],
+    promise: (client) => client.get('/post/' + id)
   };
 }
 

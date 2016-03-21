@@ -1,4 +1,5 @@
 .postContainer {
+  position: relative;
   margin: 8px 16px;
   padding: 8px 16px;
 }
@@ -9,7 +10,7 @@
 .postRow {
   display: flex;
   flex: 1;
-  flex-direction: row;
+  flex-direction: column;
   margin-bottom: 16px;
 }
 .postBody {
@@ -20,4 +21,7 @@
   line-height: 1.4;
   margin: 10px 0 3px 0;
   display: block;
+}
+.publishProgress {
+  display: inline-block,
 }

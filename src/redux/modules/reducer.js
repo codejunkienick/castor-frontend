@@ -9,18 +9,13 @@ import {reducer as form} from 'redux-form';
 import info from './info';
 import widgets from './widgets';
 import posts from './posts';
+import categories from './categories';
 
 export default combineReducers({
   routing: routeReducer,
   reduxAsyncConnect,
   auth,
-  form,
   posts,
-  multireducer: multireducer({
-    counter1: counter,
-    counter2: counter,
-    counter3: counter
-  }),
   info,
-  widgets
+  categories,
 });
