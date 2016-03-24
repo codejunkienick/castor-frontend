@@ -2,12 +2,21 @@ import { createStore as _createStore, applyMiddleware, compose } from 'redux';
 import createMiddleware from './middleware/clientMiddleware';
 import { syncHistory } from 'react-router-redux';
 import createLogger from 'redux-logger';
+import * as storage from 'redux-storage'
+import createEngine from 'redux-storage-engine-localstorage';
+import debounce from 'redux-storage-decorator-debounce';
+import filter from 'redux-storage-decorator-filter'
+
+const engine = debounce(
+    createEngine('my-save-keyklasjdlas(*^&kh(&^*dkjhaskdhaiusdhjandsa897148ASDASFG*^%*^&^*732bmndb'),
+    3000);
+export const load = storage.createLoader(engine);
 
 export default function createStore(history, client, data) {
-  // Sync dispatched route actions to the history
   const reduxRouterMiddleware = syncHistory(history);
+  const storageMiddleware = storage.createMiddleware(engine); 
+  const middleware = [createMiddleware(client), reduxRouterMiddleware, storageMiddleware, createLogger()];
 
-  const middleware = [createMiddleware(client), reduxRouterMiddleware, createLogger({level: 'info'})];
 
   let finalCreateStore;
   if (__DEVELOPMENT__ && __CLIENT__ && __DEVTOOLS__) {
@@ -24,7 +33,6 @@ export default function createStore(history, client, data) {
 
   const reducer = require('./modules/reducer');
   const store = finalCreateStore(reducer, data);
-
   reduxRouterMiddleware.listenForReplays(store);
 
   if (__DEVELOPMENT__ && module.hot) {
@@ -32,6 +40,7 @@ export default function createStore(history, client, data) {
       store.replaceReducer(require('./modules/reducer'));
     });
   }
-
+  load(store);
   return store;
 }
+

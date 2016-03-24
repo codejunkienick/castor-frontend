@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { Paper, IconMenu, IconButton, MenuItem, LinearProgress } from 'material-ui';
 import { EditorModeEdit } from 'material-ui/lib/svg-icons';
 import { connect } from 'react-redux';
-import { deleteCategory } from 'redux/modules/categories';
+import { remove } from 'redux/modules/categories';
 import { routeActions } from 'react-router-redux';
 
 @connect(
@@ -11,14 +11,14 @@ import { routeActions } from 'react-router-redux';
       deleting: state.categories.deleting  
     }
   },
-  {deleteCategory, pushState: routeActions.push}
+  {remove, pushState: routeActions.push}
 )
 export default class CategoryItem extends Component {
   static propTypes = {
     className: PropTypes.string,
     name: PropTypes.string,
     id: PropTypes.number.isRequired,
-    deleteCategory: PropTypes.func.isRequired,
+    remove: PropTypes.func.isRequired,
   }
 
   props = {
@@ -26,13 +26,13 @@ export default class CategoryItem extends Component {
   }
 
   handleDelete = () => {
-    const {deletePost, category} = this.props; 
-    deletePost(category.categoryId);
+    const {remove, category} = this.props; 
+    remove(category.categoryId);
   };
 
   handleEdit = () => {
     const {category} = this.props;  
-    this.props.pushState('/admin/category/' + category.categoryId); 
+    this.props.pushState('/admin/categories/' + category.categoryId); 
   };
 
   render()  {
@@ -45,7 +45,7 @@ export default class CategoryItem extends Component {
     return (
       <div className={styles.postWrap}>
         <Paper>
-           {(deleting && deleting[id]) && <LinearProgress mode="indeterminate" /> }
+           {(deleting && deleting[category.id]) && <LinearProgress mode="indeterminate" /> }
           <div className={styles.post}>
             <div className={styles.info}>
               Создано&nbsp;

@@ -10,7 +10,7 @@ import {
   TextField
 } from 'material-ui';
 import ContentAdd from 'material-ui/lib/svg-icons/content/add';
-import {load, add, remove} from 'redux/modules/categories';
+import {load, add, remove, dismissError, update} from 'redux/modules/categories';
 import {connect} from 'react-redux';
 import {routeActions} from 'react-router-redux';
 import {bindActionCreators} from 'redux';
@@ -23,6 +23,7 @@ import _ from 'lodash';
       loading: state.categories.loading,
       loaded: state.categories.loaded,
       adding: state.categories.adding,
+      error: state.categories.error,
       blog: state.info.blog,
       user: state.auth.user
     }
@@ -30,7 +31,8 @@ import _ from 'lodash';
   dispatch => bindActionCreators({
     pushState: routeActions.push,
     load,
-    add
+    add,
+    dismissError
   }, dispatch),
 )
 export default class Categories extends Component {
@@ -44,14 +46,30 @@ export default class Categories extends Component {
   constructor(props) {
     super(props);
     const {categoryId} = this.props.params;
+    console.log("constr " + categoryId);
     this.state = {
-      open: false,
-      newCategory: (categoryId) ? _.find(this.props.categories, (cat) => { return cat.categoryId === categoryId }) : '',
+      open: (categoryId) ? true : false,
+      openError: false,
+      newCategory: (categoryId) ? _.find(this.props.categories, { 'categoryId': categoryId }) : '',
     };
     this.props.load();
   } 
 
   componentWillReceiveProps(nextProps) {
+    const {categoryId} = this.props.params;
+    if (categoryId) {
+      const res = _.find(this.props.categories, { 'categoryId': parseInt(categoryId) });
+      this.setState(
+      {
+        open: true,
+        newCategory:  res.name,
+      });
+    }
+    if (nextProps.error) {
+      console.log(nextProps.error);
+      this.setState({openError: true});
+    }
+    
     const {added, load, loaded, loading} = this.props;
     if (!nextProps.loaded && !nextProps.loading && !loading) {
       load(); 
@@ -61,27 +79,49 @@ export default class Categories extends Component {
   handleOpen = () => {
     this.setState({open: true});
   };
+  handleCancel = () => {
+    this.setState({open: false});
+    this.props.pushState("/admin/categories");
+  }
 
   handleClose = () => {
-    const {add, user, blog} = this.props;
+    const {add, user, blog, update} = this.props;
     const {newCategory} = this.state;
-    this.setState({open: false});
-    add({name: newCategory, blogId: blog.blogId});
+    const {categoryId} = this.props.params;
+    this.setState({open: false, newCategory: ''});
+    this.props.pushState("/admin/categories");
+    if (categoryId) {
+      update({name: newCategory, blogId: blog.blogId}, categoryId);
+    } else {
+      add({name: newCategory, blogId: blog.blogId});
+    }
   };
   handleCategory = (event) => {
     this.setState({newCategory: event.target.value});
   }
+  handleCloseError = () => {
+    this.props.dismissError();
+    this.setState({openError: false});
+  }
   render() {
-    const {pushState, categories, loaded, loading, adding} = this.props;
+    const {pushState, categories, loaded, loading, adding, error} = this.props;
+    const {categoryId} = this.props.params;
     const {newCategory, categoryErr} = this.state;
+    const errActions = [
+      <FlatButton
+        label="Закрыть"
+        primary={true}
+        onTouchTap={this.handleCloseError}
+        />,
+      ];
     const actions = [
       <FlatButton
-        label="Cancel"
+        label="Отмена"
         secondary={true}
-        onTouchTap={this.handleClose}
+        onTouchTap={this.handleCancel}
         />,
         <FlatButton
-          label="Submit"
+          label="Добавить"
           primary={true}
           keyboardFocused={true}
           onTouchTap={this.handleClose}
@@ -111,7 +151,17 @@ export default class Categories extends Component {
         </FloatingActionButton>
 
         <Dialog
-          title="Добавить категорию"
+          title="Ошибка"
+          actions={errActions}
+          modal={false}
+          open={this.state.openError}
+          onRequestClose={this.handleCloseError}
+        >
+        {error && error.message}
+      </Dialog>
+
+        <Dialog
+          title={(!categoryId) ? "Добавить категорию" : "Обновить категорию"}
           actions={actions}
           modal={false}
           open={this.state.open}

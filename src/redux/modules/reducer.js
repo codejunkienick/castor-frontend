@@ -10,6 +10,7 @@ import info from './info';
 import widgets from './widgets';
 import posts from './posts';
 import categories from './categories';
+import users from './users';
 
 export default combineReducers({
   routing: routeReducer,
@@ -17,5 +18,6 @@ export default combineReducers({
   auth,
   posts,
   info,
+  users,
   categories,
 });

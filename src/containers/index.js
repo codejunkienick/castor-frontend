@@ -10,3 +10,4 @@ export Settings from './Settings/Settings';
 export Posts from './Posts/Posts';
 export Post from './Post/Post';
 export Users from './Users/Users';
+export User from './User/User';

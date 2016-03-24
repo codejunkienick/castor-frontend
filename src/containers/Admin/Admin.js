@@ -11,10 +11,10 @@ import { asyncConnect } from 'redux-async-connect';
 import { load as loadInfo, isLoaded as isInfoLoaded } from 'redux/modules/info';
 
 const menuItems = [
-  { route: '/admin/posts', text: 'Posts' },
-  { route: '/admin/users', text: 'Users' },
-  { route: '/admin/categories', text: 'Categories' },
-  { route: '/admin/settings', text: 'Settings' },
+  { route: '/admin/posts', text: 'Новостные записи' },
+  { route: '/admin/users', text: 'Пользователи' },
+  { route: '/admin/categories', text: 'Категории' },
+  { route: '/admin/settings', text: 'Настройки' },
 ];
 
 @asyncConnect([{
@@ -71,7 +71,7 @@ export default class Admin extends Component {
       return (
         <Avatar
           >
-          {username.substring(0,1)}
+          {username && username.substring(0,1)}
         </Avatar>
       );
     } 

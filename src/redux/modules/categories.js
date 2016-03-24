@@ -13,6 +13,7 @@ const UPDATE_FAIL = 'castor/categories/UPDATE_FAIL';
 const FETCH = 'castor/categories/FETCH';
 const FETCH_SUCCESS = 'castor/categories/FETCH_SUCCESS';
 const FETCH_FAIL = 'castor/categories/FETCH_FAIL';
+const DISMISS_ERROR = 'castor/categories/DISMISS_ERROR';
 
 const initialState = {
   loaded: false
@@ -101,8 +102,19 @@ export default function categories(state = initialState, action = {}) {
         fetching: false,
         fetchError: action.error
       };
+    case DISMISS_ERROR:
+      return {
+        ...state,
+        error: null
+      };
     default:
       return state;
+  }
+}
+
+export function dismissError() {
+  return {
+    type: DISMISS_ERROR
   }
 }
 
@@ -120,11 +132,7 @@ export function load() {
 export function remove(id) {
   return {
     types: [DELETE, DELETE_SUCCESS, DELETE_FAIL],
-    promise: (client) => client.del('/category', {
-      data: {
-        id
-      }
-    }),
+    promise: (client) => client.del('/category/' + id),
     id
   };
 }
@@ -138,6 +146,18 @@ export function add(category) {
       }
     }),
     category
+  };
+}
+
+export function update(category, id) {
+  return {
+    types: [UPDATE, UPDATE_SUCCESS, UPDATE_FAIL],
+    promise: (client) => client.put('/category/' + id, {
+      data: {
+        ...category
+      }
+    }),
+    id
   };
 }
 

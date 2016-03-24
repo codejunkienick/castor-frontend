@@ -7,7 +7,11 @@ import { routeActions } from 'react-router-redux';
 import config from '../../config';
 import { asyncConnect } from 'redux-async-connect';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-
+import {load as loadFromStorage} from 'redux/create';
+import {
+  FlatButton,
+  Dialog,
+} from 'material-ui';
 // Needed for onTouchTap
 // Can go away when react 1.0 release
 // Check this repo:
@@ -15,19 +19,23 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 @asyncConnect([{
-  promise: ({store: {dispatch, getState}}) => {
+  promise: (options) => {
+    const {store} = options;
     const promises = [];
-
-    if (!isAuthLoaded(getState())) {
-      promises.push(dispatch(loadAuth()));
-    }
-
+    // if (!isAuthLoaded(store.getState())) {
+    //   promises.push(loadFromStorage(store));
+    // }
     return Promise.all(promises);
   }
 }])
 @connect(
-  state => ({user: state.auth.user, token: state.auth.token}),
-  {logout, pushState: routeActions.push, authenticate, removeToken})
+  state => ({
+    user: state.auth.user, 
+    token: state.auth.token,
+    error: state.auth.error,
+    loaded: state.auth.loaded
+  }),
+  {logout, pushState: routeActions.push, authenticate, removeToken, loadAuth})
 export default class App extends Component {
   static propTypes = {
     children: PropTypes.object.isRequired,
@@ -42,15 +50,24 @@ export default class App extends Component {
     store: PropTypes.object.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false,
+    }; 
+    if (this.props.token) {
+      this.props.authenticate(this.props.token);
+      this.props.pushState('/admin');
+    }
+  }
   componentWillReceiveProps(nextProps) {
-    if (!this.props.user && nextProps.user && nextProps.token) {
+    if (!this.props.token && nextProps.token) {
       console.log(nextProps.token);
       this.props.authenticate(nextProps.token);
       this.props.pushState('/admin');
-    } else if (this.props.user && !nextProps.user) {
-      // logout
+    } else if (this.props.token && !nextProps.token) {
+      console.log(nextProps);
       this.props.pushState('/');
-      this.props.removeToken();
     }
   }
 
@@ -59,9 +76,25 @@ export default class App extends Component {
     this.props.logout();
   };
 
+  handleOpen = () => {
+    this.setState({open: true});
+  };
+
+  handleClose = () => {
+    this.setState({open: false});
+  };
+
   render() {
-    const {user} = this.props;
+    const {user, error} = this.props;
     const styles = require('./App.scss');
+    const actions = [
+      <FlatButton
+        label="Ok"
+        primary={true}
+        disabled={true}
+        onTouchTap={this.handleClose}
+      />,
+    ];
 
     return (
       <div className={styles.app}>
@@ -69,6 +102,14 @@ export default class App extends Component {
         <div className={styles.appContent}>
           {this.props.children}
         </div>
+        <Dialog
+          title="Возникла ошибка"
+          actions={actions}
+          modal={true}
+          open={this.state.open}
+        >
+          {error}
+        </Dialog>
       </div>
     );
   }

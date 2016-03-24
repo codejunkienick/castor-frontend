@@ -8,10 +8,10 @@ import { routeActions } from 'react-router-redux';
 @connect(
   (state) => { 
     return {
-      deleting: state.posts.deleting  
+      deleting: state.users.deleting  
     }
   },
-  {deletePost, pushState: routeActions.push}
+  {pushState: routeActions.push}
 )
 export default class UserItem extends Component {
   static propTypes = {
@@ -28,22 +28,20 @@ export default class UserItem extends Component {
     className: ''
   }
 
-  showBody() {
-    console.log(this.props.body);
-  }
 
-  handleDeletePost = () => {
-    const {deletePost, id} = this.props; 
-    deletePost(id);
+  handleDelete = () => {
+    const {user} = this.props; 
+    delete(user.id);
   };
 
-  handleEditPost = () => {
-    const {id} = this.props;  
-    this.props.pushState('/admin/post/' + id); 
+  handleEdit = () => {
+    const {user} = this.props;  
+    this.props.pushState('/admin/post/' + user.id); 
   };
 
   render() {
-    const {id, title, date, body, author, deleting} = this.props;
+    const {id, userName, displayName} = this.props.user;
+    const {deleting} = this.props;
     let {className} = this.props;
 
     const styles = require('./UserItem.scss');
@@ -52,11 +50,10 @@ export default class UserItem extends Component {
       <div className={styles.postWrap}>
         <Paper>
            {(deleting && deleting[id]) && <LinearProgress mode="indeterminate" /> }
-          <div className={styles.post} onClick={this.showBody.bind(this)}>
+          <div className={styles.post}>
             <div className={styles.info}>
-              <span className={styles.author}>@{author}</span>
-              <span className={styles.title}>{title}</span>
-              <span className={styles.date}>{ new Date(date).toLocaleString() }</span>
+              <span className={styles.author}>@{userName}</span>
+              {displayName && <span>{displayName}</span>}
             </div>
             <div className={styles.actions}>
               <IconMenu

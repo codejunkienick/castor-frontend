@@ -1,3 +1,4 @@
+import { LOAD as LOAD_FROM_STORAGE, SAVE } from 'redux-storage';
 const LOAD = 'castor/auth/LOAD';
 const LOAD_SUCCESS = 'castor/auth/LOAD_SUCCESS';
 const LOAD_FAIL = 'castor/auth/LOAD_FAIL';
@@ -16,6 +17,11 @@ const initialState = {
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
+    case LOAD_FROM_STORAGE: 
+      return {
+        ...action.payload.auth,
+        loaded: true,
+      };
     case LOAD:
       return {
         ...state,
@@ -27,7 +33,8 @@ export default function reducer(state = initialState, action = {}) {
         loading: false,
         loaded: true,
         token: action.result.token,
-        user: action.result.user
+        user: action.result.user,
+        tokenExpires: Date.parse(action.result.tokenExpires)
       };
     case LOAD_FAIL:
       return {
@@ -36,7 +43,7 @@ export default function reducer(state = initialState, action = {}) {
         loaded: false,
         user: null,
         token: null,
-        error: action.error.message
+        error: action.error
       };
     case LOGIN:
       return {
@@ -47,15 +54,16 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         loggingIn: false,
-        user: action.result,
-        token: action.result.token
+        token: action.result.token,
+        user: action.result.user,
+        tokenExpires: Date.parse(action.result.tokenExpires)
       };
     case LOGIN_FAIL:
       return {
         ...state,
         loggingIn: false,
         user: null,
-        loginError: action.error.message
+        loginError: action.error
       };
     case LOGOUT:
       return {
@@ -65,9 +73,9 @@ export default function reducer(state = initialState, action = {}) {
     case LOGOUT_SUCCESS:
       return {
         ...state,
-        loggingOut: false,
         user: null,
-        token: null
+        token: null,
+        tokenExpires: null
       };
     case LOGOUT_FAIL:
       return {
@@ -118,9 +126,16 @@ export function removeToken() {
   };
 }
 
+// export function logout() {
+//   return {
+//     types: [logout, logout_success, logout_fail],
+//     promise: (client) => client.get('/user/logout')
+//   };
+// }
+
 export function logout() {
   return {
-    types: [LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAIL],
-    promise: (client) => client.get('/user/logout')
+    type: LOGOUT_SUCCESS,
+    auth: (client) => client.auth('')
   };
 }

@@ -51,7 +51,11 @@ class _ApiClient {
 
         request.end(function(err, res) {
           if (err) {
-            reject(res.body || err)
+            if (res) {
+              reject(res.body);
+            } else {
+              reject(err);  
+            }
           } else {
             resolve(res.body)
           }

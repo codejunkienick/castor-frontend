@@ -1,6 +1,10 @@
 import React from 'react';
 import {IndexRoute, Route} from 'react-router';
-import { isLoaded as isAuthLoaded, load as loadAuth } from 'redux/modules/auth';
+import {
+  isLoaded as isAuthLoaded,
+  load as loadAuth,
+  logout,
+} from 'redux/modules/auth';
 import {
     App,
     Login,
@@ -12,29 +16,24 @@ import {
     Posts,
     Post,
     Categories,
+    User,
     Settings,
   } from 'containers';
+import {load as loadFromStorage} from 'redux/create';
 
 export default (store) => {
   const requireLogin = (nextState, replace, cb) => {
     function checkAuth() {
-      const { auth: { user, token }} = store.getState();
+      const { auth: { user, token, tokenExpires }} = store.getState();
+      //TODO: Handle token expiriation
       if (!user) {
-        // oops, not logged in, so can't be here!
-        replace('/login');
+        replace('/');
       }
       cb();
     }
 
     if (!isAuthLoaded(store.getState())) {
-      store
-      .dispatch(loadAuth())
-      .then(checkAuth)
-      .catch(err => {
-        console.log('oops');
-        replace('/');
-        cb();
-      }) ;
+      //loadFromStorage(store);
     } else {
       checkAuth();
     }
@@ -60,8 +59,9 @@ export default (store) => {
           <Route path="post" component={Post}/>
           <Route path="post/:postID" component={Post}/>
           <Route path="users" component={Users}/>
-          <Route path="categories" component={Categories}/>
+          <Route path="user/:userId" component={User}/>
           <Route path="categories/:categoryId" component={Categories}/>
+          <Route path="categories" component={Categories}/>
           <Route path="settings" component={Settings}/>
         </Route>
       </Route>
