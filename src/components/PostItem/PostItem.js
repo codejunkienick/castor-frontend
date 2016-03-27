@@ -3,7 +3,7 @@ import { Paper, IconMenu, IconButton, MenuItem, LinearProgress } from 'material-
 import { EditorModeEdit } from 'material-ui/lib/svg-icons';
 import { connect } from 'react-redux';
 import { deletePost } from 'redux/modules/posts';
-import { routeActions } from 'react-router-redux';
+import { push } from 'react-router-redux';
 
 @connect(
   (state) => { 
@@ -12,7 +12,7 @@ import { routeActions } from 'react-router-redux';
       deleted: state.posts.deleted, 
     }
   },
-  {deletePost, pushState: routeActions.push}
+  {deletePost, pushState: push}
 )
 export default class PostItem extends Component {
   static propTypes = {

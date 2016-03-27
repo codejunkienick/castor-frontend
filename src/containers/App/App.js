@@ -10,7 +10,7 @@ import {
   authenticate, 
   removeToken 
 } from 'redux/modules/auth';
-import { routeActions } from 'react-router-redux';
+import { push } from 'react-router-redux';
 import config from '../../config';
 import { asyncConnect } from 'redux-async-connect';
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -39,7 +39,7 @@ injectTapEventPlugin();
     error: state.auth.error,
     loaded: state.auth.loaded
   }),
-  {logout, pushState: routeActions.push, authenticate, removeToken, loadAuth})
+  {logout, pushState: push, authenticate, removeToken, loadAuth})
 export default class App extends Component {
   static propTypes = {
     children: PropTypes.object.isRequired,
@@ -61,7 +61,7 @@ export default class App extends Component {
     }; 
     if (this.props.token) {
       this.props.authenticate(this.props.token);
-      this.props.push('/admin');
+      this.props.pushState('/admin');
     }
   }
   componentWillReceiveProps(nextProps) {

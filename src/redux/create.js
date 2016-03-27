@@ -1,7 +1,8 @@
 import { createStore as _createStore, applyMiddleware, compose } from 'redux';
 import createMiddleware from './middleware/clientMiddleware';
-import { syncHistory } from 'react-router-redux';
+import { routerMiddleware as syncHistory } from 'react-router-redux';
 import createLogger from 'redux-logger';
+import { browserHistory } from 'react-router';
 import * as storage from 'redux-storage'
 import createEngine from 'redux-storage-engine-localstorage';
 import debounce from 'redux-storage-decorator-debounce';
@@ -12,8 +13,8 @@ const engine = debounce(
     3000);
 export const load = storage.createLoader(engine);
 
-export default function createStore(history, client, data) {
-  const reduxRouterMiddleware = syncHistory(history);
+export default function createStore(client, data) {
+  const reduxRouterMiddleware = syncHistory(browserHistory);
   const storageMiddleware = storage.createMiddleware(engine); 
   const middleware = [createMiddleware(client), reduxRouterMiddleware, storageMiddleware, createLogger()];
 
@@ -33,7 +34,6 @@ export default function createStore(history, client, data) {
 
   const reducer = require('./modules/reducer');
   const store = finalCreateStore(reducer, data);
-  reduxRouterMiddleware.listenForReplays(store);
 
   if (__DEVELOPMENT__ && module.hot) {
     module.hot.accept('./modules/reducer', () => {

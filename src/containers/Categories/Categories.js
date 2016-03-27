@@ -12,7 +12,7 @@ import {
 import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import {load, add, remove, dismissError, update} from 'redux/modules/categories';
 import {connect} from 'react-redux';
-import {routeActions} from 'react-router-redux';
+import {push} from 'react-router-redux';
 import {bindActionCreators} from 'redux';
 import _ from 'lodash';
 
@@ -29,7 +29,7 @@ import _ from 'lodash';
     }
   },
   dispatch => bindActionCreators({
-    pushState: routeActions.push,
+    pushState: push,
     load,
     add,
     dismissError
@@ -52,6 +52,7 @@ export default class Categories extends Component {
       openError: false,
       newCategory: (categoryId) ? _.find(this.props.categories, { 'categoryId': categoryId }) : '',
     };
+    console.log(this.state);
     this.props.load();
   } 
 
@@ -59,6 +60,7 @@ export default class Categories extends Component {
     const {categoryId} = this.props.params;
     if (categoryId) {
       const res = _.find(this.props.categories, { 'categoryId': parseInt(categoryId) });
+      console.log(res);
       this.setState(
       {
         open: true,

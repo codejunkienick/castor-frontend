@@ -11,7 +11,7 @@ import {
 } from 'material-ui';
 import {load, add, remove, dismissError, update} from 'redux/modules/users';
 import {connect} from 'react-redux';
-import {routeActions} from 'react-router-redux';
+import {push} from 'react-router-redux';
 import {bindActionCreators} from 'redux';
 import _ from 'lodash';
 
@@ -28,7 +28,7 @@ import _ from 'lodash';
     }
   },
   dispatch => bindActionCreators({
-    pushState: routeActions.push,
+    pushState: push,
     load,
     add,
     dismissError

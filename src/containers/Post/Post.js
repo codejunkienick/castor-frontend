@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import Helmet from 'react-helmet';
 import {DashboardBar, Editor, LoadingSpinner} from 'components';
 import {publish, fetch, update, initNewPost} from 'redux/modules/posts';
-import { routeActions } from 'react-router-redux';
+import { push } from 'react-router-redux';
 import {load as loadCategories} from 'redux/modules/categories';
 import {EditorState, convertToRaw, ContentState, convertFromRaw} from 'draft-js';
 import {required} from 'utils/validation';
@@ -57,7 +57,7 @@ if (areIntlLocalesSupported(['ru'])) {
     fetch,
     update,
     initNewPost,
-    pushState: routeActions.push
+    pushState: push
   }
 )
 export default class Post extends Component {

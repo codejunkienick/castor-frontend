@@ -3,7 +3,7 @@ import { Paper, IconMenu, IconButton, MenuItem, LinearProgress } from 'material-
 import { EditorModeEdit } from 'material-ui/lib/svg-icons';
 import { connect } from 'react-redux';
 import { remove } from 'redux/modules/categories';
-import { routeActions } from 'react-router-redux';
+import { push } from 'react-router-redux';
 
 @connect(
   (state) => { 
@@ -11,7 +11,7 @@ import { routeActions } from 'react-router-redux';
       deleting: state.categories.deleting  
     }
   },
-  {remove, pushState: routeActions.push}
+  {remove, pushState: push}
 )
 export default class CategoryItem extends Component {
   static propTypes = {
@@ -32,7 +32,7 @@ export default class CategoryItem extends Component {
 
   handleEdit = () => {
     const {category} = this.props;  
-    this.props.pushState('/admin/categories/' + category.categoryId); 
+    this.props.pushState('/admin/categories/edit/' + category.categoryId); 
   };
 
   render()  {
@@ -58,7 +58,6 @@ export default class CategoryItem extends Component {
                 anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                 targetOrigin={{horizontal: 'right', vertical: 'top'}}
                 >
-                <MenuItem onTouchTap={this.handleEdit} primaryText="Редактировать" />
                 <MenuItem onTouchTap={this.handleDelete} primaryText="Удалить" />
               </IconMenu>
             </div>

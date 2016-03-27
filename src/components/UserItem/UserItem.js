@@ -3,7 +3,7 @@ import { Paper, IconMenu, IconButton, MenuItem, LinearProgress } from 'material-
 import { EditorModeEdit } from 'material-ui/lib/svg-icons';
 import { connect } from 'react-redux';
 import { deletePost } from 'redux/modules/posts';
-import { routeActions } from 'react-router-redux';
+import { push } from 'react-router-redux';
 
 @connect(
   (state) => { 
@@ -11,7 +11,7 @@ import { routeActions } from 'react-router-redux';
       deleting: state.users.deleting  
     }
   },
-  {pushState: routeActions.push}
+  {pushState: push}
 )
 export default class UserItem extends Component {
   static propTypes = {
@@ -61,8 +61,6 @@ export default class UserItem extends Component {
                 anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                 targetOrigin={{horizontal: 'right', vertical: 'top'}}
                 >
-                <MenuItem onTouchTap={this.handleEditPost} primaryText="Редактировать" />
-                <MenuItem onTouchTap={this.handleDeletePost} primaryText="Удалить" />
               </IconMenu>
             </div>
           </div>

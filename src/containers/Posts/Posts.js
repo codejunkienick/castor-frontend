@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {asyncConnect} from 'redux-async-connect';
-import {routeActions} from 'react-router-redux';
+import {push} from 'react-router-redux';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Helmet from 'react-helmet';
@@ -13,11 +13,22 @@ import {
   Dialog,
   FlatButton,
   DropDownMenu,
+  DatePicker,
   TextField,
 } from 'material-ui';
 import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import SearchIcon from 'material-ui/lib/svg-icons/action/search';
 import {PostItem, DashboardBar, LoadingSpinner} from 'components';
+import areIntlLocalesSupported from 'intl-locales-supported';
+
+let DateTimeFormat;
+if (areIntlLocalesSupported(['ru'])) {
+  DateTimeFormat = global.Intl.DateTimeFormat;
+} else {
+  const IntlPolyfill = require('intl');
+  DateTimeFormat = IntlPolyfill.DateTimeFormat;
+  require('intl/locale-data/jsonp/ru');
+}
 
 @connect(
   state => {
@@ -29,7 +40,7 @@ import {PostItem, DashboardBar, LoadingSpinner} from 'components';
     }
   },
   dispatch => bindActionCreators({
-    pushState: routeActions.push,
+    pushState: push,
     loadPosts,
     search
   }, dispatch),
@@ -54,14 +65,16 @@ export default class Posts extends Component {
       }
     };
     this.props.loadPosts();
+    this.handleCategorySearch = (event, index, value) => this.setState({
+        search: {
+          ...this.state.search,
+          category: value
+        }
+      }
+    );
+    this.dateStateChange = (event, date) => this.setState({date: date});
   } 
   
-  handleCategorySearch = (event, index, value) => {
-   // this.setState({search: {
-    //   ...this.state.search,
-    //   category: value 
-    // }});
-  }
   handleSearch = (field) => {
     return (event) => this.setState({search: {
       ...this.state.search,
@@ -80,7 +93,10 @@ export default class Posts extends Component {
   handleClose = () => {
     const {user, search} = this.props;
     this.setState({openSearch: false, pageTitle: 'Результаты поиска'});
-    search(this.state.search);
+    search({
+      ...this.state.search,
+      fromDate: Date.parse(this.state.fromDate).toISOString()     
+    });
   };
 
   render() {
@@ -167,7 +183,7 @@ export default class Posts extends Component {
               Категория
               <DropDownMenu 
                 style={{minWidth: '50px'}} 
-                onChange={this.handleCategorySearch()}
+                onChange={this.handleCategorySearch}
                 value={search.category}
                 >
                 <MenuItem value={null} primaryText="Любая категория" />
@@ -190,6 +206,21 @@ export default class Posts extends Component {
                 rows={3}
                 style={{width: '100%'}}
                 />
+            </div>
+            <div>
+              Записи от
+              <DatePicker
+                value={search.fromDate}
+                onChange={this.dateStateChange}
+                style={{margin: '0 8px 0 0'}}
+                hintText="Дата" 
+                floatingLabelText="Дата" 
+                mode="landscape" 
+                wordings={{ok: 'OK', cancel: 'Отмена'}}
+                firstDayOfWeek={1}
+                DateTimeFormat={DateTimeFormat}
+                locale="ru"
+              />
             </div>
           </div>
         </Dialog>

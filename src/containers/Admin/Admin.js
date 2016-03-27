@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-import { routeActions } from 'react-router-redux';
+import { push } from 'react-router-redux';
 import Helmet from 'react-helmet';
 import {
   Avatar,
@@ -39,7 +39,7 @@ const menuItems = [
       user: state.auth.user
     }
   },
-  {pushState: routeActions.push}
+  {pushState: push}
 )
 export default class Admin extends Component {
   static propTypes = {

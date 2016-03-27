@@ -74,7 +74,7 @@ export default (store) => {
           <Route path="post/:postID" component={Post}/>
           <Route path="users" component={Users}/>
           <Route path="user/:userId" component={User}/>
-          <Route path="categories/:categoryId" component={Categories}/>
+          <Route path="categories/edit/:categoryId" component={Categories}/>
           <Route path="categories" component={Categories}/>
           <Route path="settings" component={Settings}/>
         </Route>
