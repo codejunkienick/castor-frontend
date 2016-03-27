@@ -19,8 +19,9 @@ export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case LOAD_FROM_STORAGE: 
       return {
-        ...action.payload.auth,
-        loaded: true,
+        token: action.payload.auth.token,
+        tokenExpires: action.payload.auth.token,
+        restored: true,
       };
     case LOAD:
       return {
@@ -41,8 +42,6 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         loading: false,
         loaded: false,
-        user: null,
-        token: null,
         error: action.error
       };
     case LOGIN:
@@ -90,6 +89,9 @@ export default function reducer(state = initialState, action = {}) {
 
 export function isLoaded(globalState) {
   return globalState.auth && globalState.auth.loaded;
+}
+export function isRestored(globalState) {
+  return globalState.auth && globalState.auth.restored;
 }
 
 export function load() {

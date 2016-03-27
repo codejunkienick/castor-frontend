@@ -2,7 +2,14 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 import { isLoaded as isInfoLoaded, load as loadInfo } from 'redux/modules/info';
-import { isLoaded as isAuthLoaded, load as loadAuth, logout, authenticate, removeToken } from 'redux/modules/auth';
+import { 
+  isRestored as isAuthRestored,
+  isLoaded as isAuthLoaded,
+  load as loadAuth, 
+  logout, 
+  authenticate, 
+  removeToken 
+} from 'redux/modules/auth';
 import { routeActions } from 'react-router-redux';
 import config from '../../config';
 import { asyncConnect } from 'redux-async-connect';
@@ -19,12 +26,9 @@ import {
 injectTapEventPlugin();
 
 @asyncConnect([{
-  promise: (options) => {
+  promise: async function(options) {
     const {store} = options;
     const promises = [];
-    // if (!isAuthLoaded(store.getState())) {
-    //   promises.push(loadFromStorage(store));
-    // }
     return Promise.all(promises);
   }
 }])
@@ -57,11 +61,11 @@ export default class App extends Component {
     }; 
     if (this.props.token) {
       this.props.authenticate(this.props.token);
-      this.props.pushState('/admin');
+      this.props.push('/admin');
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (!this.props.token && nextProps.token) {
+    if (!this.props.user && nextProps.user) {
       console.log(nextProps.token);
       this.props.authenticate(nextProps.token);
       this.props.pushState('/admin');
@@ -74,6 +78,7 @@ export default class App extends Component {
   handleLogout = (event) => {
     event.preventDefault();
     this.props.logout();
+    this.props.removeToken();
   };
 
   handleOpen = () => {

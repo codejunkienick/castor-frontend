@@ -13,6 +13,9 @@ const UPDATE_FAIL = 'castor/posts/UPDATE_FAIL';
 const FETCH = 'castor/posts/FETCH';
 const FETCH_SUCCESS = 'castor/posts/FETCH_SUCCESS';
 const FETCH_FAIL = 'castor/posts/FETCH_FAIL';
+const SEARCH = 'castor/posts/SEARCH';
+const SEARCH_SUCCESS = 'castor/posts/SEARCH_SUCCESS';
+const SEARCH_FAIL = 'castor/posts/SEARCH_FAIL';
 const NEW_POST = 'castor/posts/NEW_POST';
 
 const initialState = {
@@ -34,6 +37,25 @@ export default function posts(state = initialState, action = {}) {
         data: action.result
       };
     case LOAD_FAIL:
+      return {
+        ...state,
+        loading: false,
+        loaded: false,
+        error: action.error
+      };
+    case SEARCH:
+      return {
+        ...state,
+        loading: true
+      };
+    case SEARCH_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        loaded: true,
+        data: action.result
+      };
+    case SEARCH_FAIL:
       return {
         ...state,
         loading: false,
@@ -139,7 +161,7 @@ export default function posts(state = initialState, action = {}) {
 }
 
 export function isLoaded(globalState) {
-  return globalState.info && globalState.info.loaded;
+  return globalState.posts && globalState.posts.loaded;
 }
 
 export function load() {
@@ -192,6 +214,15 @@ export function fetch(id) {
   return {
     types: [FETCH, FETCH_SUCCESS, FETCH_FAIL],
     promise: (client) => client.get('/post/' + id)
+  };
+}
+
+export function search(queryObj) {
+  return {
+    types: [SEARCH, SEARCH_SUCCESS, SEARCH_FAIL],
+    promise: (client) => client.get('/post/search', {
+      params: queryObj
+    })
   };
 }
 

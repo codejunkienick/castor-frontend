@@ -8,7 +8,7 @@ export default function clientMiddleware(client) {
       const { promise, types, auth, ...rest } = action; // eslint-disable-line no-redeclare
       if (auth) {
         auth(client);
-        return next({promise, types, ...rest});
+        return next({types, ...rest});
       }
 
       if (!promise) {

@@ -5,7 +5,7 @@ const style = {
   indicator: {
     display: 'absolute',
     top: '20%',
-    left: '40%',
+    left: '37%',
   },
   fetchingProgressContainer: {
     position: 'absolute',

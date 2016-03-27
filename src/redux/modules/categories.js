@@ -119,7 +119,7 @@ export function dismissError() {
 }
 
 export function isLoaded(globalState) {
-  return globalState.info && globalState.info.loaded;
+  return globalState.categories && globalState.categories.loaded;
 }
 
 export function load() {

@@ -9,6 +9,7 @@ import {
 } from 'material-ui';
 import { asyncConnect } from 'redux-async-connect';
 import { load as loadInfo, isLoaded as isInfoLoaded } from 'redux/modules/info';
+import {load as loadCategories, isLoaded as isCategoriesLoaded} from 'redux/modules/categories';
 
 const menuItems = [
   { route: '/admin/posts', text: 'Новостные записи' },
@@ -23,6 +24,10 @@ const menuItems = [
 
     if (!isInfoLoaded(getState())) {
       promises.push(dispatch(loadInfo()));
+    }
+
+    if (!isCategoriesLoaded(getState())) {
+      promises.push(dispatch(loadCategories()));
     }
 
     return Promise.all(promises);

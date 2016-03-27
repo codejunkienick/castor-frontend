@@ -2,8 +2,11 @@ import React from 'react';
 import {IndexRoute, Route} from 'react-router';
 import {
   isLoaded as isAuthLoaded,
+  isRestored as isAuthRestored,
   load as loadAuth,
   logout,
+  authenticate,
+  removeToken,
 } from 'redux/modules/auth';
 import {
     App,
@@ -22,18 +25,29 @@ import {
 import {load as loadFromStorage} from 'redux/create';
 
 export default (store) => {
-  const requireLogin = (nextState, replace, cb) => {
+  const requireLogin = async function(nextState, replace, cb) {
     function checkAuth() {
       const { auth: { user, token, tokenExpires }} = store.getState();
       //TODO: Handle token expiriation
       if (!user) {
+        console.log('return');
+        store.dispatch(removeToken());
         replace('/');
       }
+      console.log('render');
       cb();
     }
 
+    if (!isAuthRestored(store.getState())) {
+      await loadFromStorage(store);
+      store.dispatch(authenticate(store.getState().auth.token));
+    }
+
     if (!isAuthLoaded(store.getState())) {
-      //loadFromStorage(store);
+      store.dispatch(loadAuth()).then(checkAuth).catch(err => {
+        replace('/')
+        cb();
+      });
     } else {
       checkAuth();
     }

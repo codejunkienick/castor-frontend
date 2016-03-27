@@ -30,9 +30,10 @@ class _ApiClient {
       this[method] = (path, { params, data } = {}) => new Promise((resolve, reject) => {
         console.log(formatUrl(path));
         const request = superagent[method](formatUrl(path));
-        request.accept('application/json');
+        request.withCredentials()
 
         if (params) {
+          console.log(params);
           request.query(params);
         }
 
@@ -41,6 +42,7 @@ class _ApiClient {
         }
 
         if (this.token) {
+          console.log(this.token);
           request.set('Authorization', 'Bearer ' + this.token);
         }
 
@@ -48,6 +50,7 @@ class _ApiClient {
           request.set('Content-Type', 'application/json');
           request.send(JSON.stringify(data));
         }
+
 
         request.end(function(err, res) {
           if (err) {
