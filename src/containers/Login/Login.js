@@ -39,8 +39,8 @@ export default class Login extends Component {
                 <div className={styles.loginRow}>
                   <TextField
                     ref="username"
-                    hintText="Username"
-                    floatingLabelText="Username"
+                    hintText="Login"
+                    floatingLabelText="Login"
                     type="text"
                     defaultValue="admin"
                   />
@@ -48,10 +48,10 @@ export default class Login extends Component {
                 <div className={styles.loginRow}>
                   <TextField
                     ref="password"
-                    hintText="Password"
-                    floatingLabelText="Password"
+                    hintText="Пароль"
+                    floatingLabelText="Пароль"
                     type="password"
-                    defaultValue="SuperKek_007"
+                    defaultValue="AdminPass_007"
                   />
                 </div>
                 <div>

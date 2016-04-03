@@ -95,9 +95,16 @@ export default class Posts extends Component {
     this.setState({openSearch: false, pageTitle: 'Результаты поиска'});
     search({
       ...this.state.search,
-      fromDate: Date.parse(this.state.fromDate).toISOString()     
+      fromDate: null     
     });
   };
+
+  componentWillReceiveProps(nextProps) {
+    const { loaded, loading,loadPosts } = this.props;
+    if (!loaded && !loading) {
+      loadPosts();
+    }
+  }
 
   render() {
     const {
@@ -203,24 +210,9 @@ export default class Posts extends Component {
                 value={search.content}
                 floatingLabelText="Поиск по тексту"
                 multiLine={true}
-                rows={3}
-                style={{width: '100%'}}
+                rows={1}
+                style={{width: '50%'}}
                 />
-            </div>
-            <div>
-              Записи от
-              <DatePicker
-                value={search.fromDate}
-                onChange={this.dateStateChange}
-                style={{margin: '0 8px 0 0'}}
-                hintText="Дата" 
-                floatingLabelText="Дата" 
-                mode="landscape" 
-                wordings={{ok: 'OK', cancel: 'Отмена'}}
-                firstDayOfWeek={1}
-                DateTimeFormat={DateTimeFormat}
-                locale="ru"
-              />
             </div>
           </div>
         </Dialog>

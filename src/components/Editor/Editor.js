@@ -109,7 +109,7 @@ export default class MyEditor extends Component {
                 editorState={editorState}
                 handleKeyCommand={this.handleKeyCommand}
                 onChange={this.onChange}
-                placeholder="Tell a story..."
+                placeholder="Расскажите историю..."
                 ref="editor"
                 spellCheck={true}
                 />

@@ -145,6 +145,7 @@ export default class Post extends Component {
       } else {
         console.log('updating post');
         update(post, postID);
+        this.props.pushState('/admin/posts');
       }
     }
   }
